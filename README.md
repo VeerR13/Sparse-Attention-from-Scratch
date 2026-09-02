@@ -41,7 +41,7 @@ WRITEUP.md
 ## Setup
 
 ```bash
-git clone https://github.com/<user>/sparse-attention-from-scratch.git
+git clone https://github.com/VeerR13/sparse-attention-from-scratch.git
 cd sparse-attention-from-scratch
 pip install -r requirements.txt
 ```
