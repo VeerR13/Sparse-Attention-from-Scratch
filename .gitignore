@@ -9,3 +9,4 @@ data/
 *.pt
 *.ckpt
 .DS_Store
+scratch/
