@@ -15,18 +15,35 @@ def sliding_window_mask(seq_len, window_size):
     return mask
 
 
-def block_sparse_mask(seq_len, window_size, num_global, num_random):
-    # BigBird-style: local window + a few global tokens + a few random ones
-    mask = sliding_window_mask(seq_len, window_size)
+def block_sparse_mask(seq_len, block_size, num_global_blocks, num_random_blocks, generator=None):
+    # BigBird-style: decide per BLOCK first, then expand to tokens
+    num_blocks = (seq_len + block_size - 1) // block_size  # round up
 
-    # global tokens see everything and are seen by everything
-    mask[:num_global, :] = True
-    mask[:, :num_global] = True
+    block_mask = torch.zeros(num_blocks, num_blocks, dtype=torch.bool)
 
-    # each row also gets a few random extra positions it can see
-    for i in range(seq_len):
-        random_cols = torch.randint(0, seq_len, (num_random,))
-        mask[i, random_cols] = True
+    for i in range(num_blocks):
+        # local window: this block plus one either side
+        for j in range(max(0, i - 1), min(num_blocks, i + 2)):
+            block_mask[i, j] = True
 
-    # still causal, no peeking at future tokens
+        # random: only sample from blocks i is allowed to see, so nothing gets wasted later
+        legal = list(range(i + 1))
+        k = min(num_random_blocks, len(legal))
+        picks = torch.randperm(len(legal), generator=generator)[:k]
+        for p in picks:
+            block_mask[i, legal[p]] = True
+
+    # global: first and last block see everything and are seen by everything
+    # guarded because -0 is 0 in a slice, so block_mask[-0:] would mean "everything"
+    if num_global_blocks > 0:
+        block_mask[:num_global_blocks, :] = True
+        block_mask[:, :num_global_blocks] = True
+        block_mask[-num_global_blocks:, :] = True
+        block_mask[:, -num_global_blocks:] = True
+
+    mask = block_mask.repeat_interleave(block_size, dim=0).repeat_interleave(block_size, dim=1)
+    mask = mask[:seq_len, :seq_len]  # trim the extra from rounding up to a full block
+
+    # required, not just a check: window and global above are built symmetric on purpose,
+    # this is what cuts them down to their causal, one-sided shape
     return mask & causal_mask(seq_len)
