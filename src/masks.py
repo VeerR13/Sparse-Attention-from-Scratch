@@ -17,6 +17,9 @@ def sliding_window_mask(seq_len, window_size):
 
 def block_sparse_mask(seq_len, block_size, num_global_blocks, num_random_blocks, generator=None):
     # BigBird-style: decide per BLOCK first, then expand to tokens
+    if generator is None:
+        generator = torch.Generator().manual_seed(0)  # default is reproducible, pass your own for a different draw
+
     num_blocks = (seq_len + block_size - 1) // block_size  # round up
 
     block_mask = torch.zeros(num_blocks, num_blocks, dtype=torch.bool)
