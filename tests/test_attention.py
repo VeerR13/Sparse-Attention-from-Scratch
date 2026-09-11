@@ -74,3 +74,39 @@ def test_block_sparse_matches_dense_where_masks_agree():
     sparse_mask = block_sparse_mask(seq_len, block_size, num_global_blocks=1, num_random_blocks=1)
 
     assert_matches_dense_where_masks_agree(dense_mask, sparse_mask, q, k, v)
+
+
+# a fully-masked row must return zero, not NaN
+def test_nan_guard_on_fully_masked_rows():
+    torch.manual_seed(0)
+    seq_len = 8
+
+    q = torch.randn(1, 1, seq_len, 8)
+    k = torch.randn(1, 1, seq_len, 8)
+    v = torch.randn(1, 1, seq_len, 8)
+
+    mask = sliding_window_mask(seq_len, 0)
+    out = dense_attention(q, k, v, mask)
+
+    assert not torch.isnan(out).any()
+    assert torch.equal(out, torch.zeros_like(out))
+
+
+# the guard must not change output on rows that were never empty
+def test_nan_guard_is_a_no_op_on_normal_rows():
+    torch.manual_seed(0)
+    seq_len = 8
+
+    q = torch.randn(1, 1, seq_len, 8)
+    k = torch.randn(1, 1, seq_len, 8)
+    v = torch.randn(1, 1, seq_len, 8)
+
+    mask = causal_mask(seq_len)
+    out_no_empty = dense_attention(q, k, v, mask)
+
+    mask_with_empty = mask.clone()
+    mask_with_empty[0, :] = False
+    out_with_empty = dense_attention(q, k, v, mask_with_empty)
+
+    assert torch.allclose(out_with_empty[..., 1:, :], out_no_empty[..., 1:, :], atol=1e-6)
+    assert torch.equal(out_with_empty[..., 0, :], torch.zeros_like(out_with_empty[..., 0, :]))
