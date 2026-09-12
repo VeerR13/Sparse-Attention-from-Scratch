@@ -1,4 +1,7 @@
+import sys
 import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 import csv
 import json
 import time
@@ -116,13 +119,16 @@ def plot_measured(rows, info):
         ax1.plot(xs, [r["time_ms"] for r in rows if r["pattern"] == name], marker="o", label=name)
         ax2.plot(xs, [r["peak_mem_mb"] for r in rows if r["pattern"] == name], marker="o", label=name)
 
-    for ax, ylabel, title in [(ax1, "time per forward pass (ms)", "measured: wall-clock"),
-                               (ax2, "peak memory (MB)", "measured: peak memory")]:
+    memory_is_zero = all(r["peak_mem_mb"] == 0 for r in rows)
+
+    for ax, ylabel, title, has_data in [(ax1, "time per forward pass (ms)", "measured: wall-clock", True),
+                                         (ax2, "peak memory (MB)", "measured: peak memory", not memory_is_zero)]:
         ax.set_xlabel("sequence length")
         ax.set_ylabel(ylabel)
         ax.set_title(title)
         ax.set_xscale("log")
-        ax.set_yscale("log")
+        if has_data:
+            ax.set_yscale("log")
         ax.legend()
 
     fig.suptitle(f"{info['gpu']} | torch {info['torch_version']} | cuda {info['cuda_version']}")
