@@ -20,3 +20,12 @@ Raw notes as I hit things, to turn into WRITEUP.md later.
 - The brief's "block boundaries" case: a block-sparse row whose only allowed
   blocks fall in the future gets emptied by the causal intersection. My global
   block 0 prevents it - every row can always see block 0.
+
+## 1.5 benchmark
+
+Masking applies after the matmul has already computed and allocated the full
+n x n grid, so sparse semantics are achieved with zero saving in time or
+memory - the measured benchmark shows dense, sliding-window, and block-sparse
+as three overlapping curves, all following the same quadratic shape. Real
+savings require never computing the skipped cells in the first place, which is
+what a gather-based implementation would do, and is Task 4's whole premise.
