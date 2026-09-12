@@ -1,0 +1,114 @@
+{
+  "hardware": {
+    "gpu": "Tesla T4",
+    "torch_version": "2.11.0+cu128",
+    "cuda_version": "12.8"
+  },
+  "rows": [
+    {
+      "pattern": "dense",
+      "seq_len": 512,
+      "time_ms": 0.4979950000461031,
+      "peak_mem_mb": 13.369856,
+      "cells": 131328
+    },
+    {
+      "pattern": "sliding_window",
+      "seq_len": 512,
+      "time_ms": 0.4038970000692643,
+      "peak_mem_mb": 13.369856,
+      "cells": 98432
+    },
+    {
+      "pattern": "block_sparse",
+      "seq_len": 512,
+      "time_ms": 0.40022899997893546,
+      "peak_mem_mb": 13.369856,
+      "cells": 110848
+    },
+    {
+      "pattern": "dense",
+      "seq_len": 1024,
+      "time_ms": 0.46078000002580666,
+      "peak_mem_mb": 27.132928,
+      "cells": 524800
+    },
+    {
+      "pattern": "sliding_window",
+      "seq_len": 1024,
+      "time_ms": 0.460327000041616,
+      "peak_mem_mb": 27.132928,
+      "cells": 229504
+    },
+    {
+      "pattern": "block_sparse",
+      "seq_len": 1024,
+      "time_ms": 0.47269600008803536,
+      "peak_mem_mb": 27.132928,
+      "cells": 295424
+    },
+    {
+      "pattern": "dense",
+      "seq_len": 2048,
+      "time_ms": 1.4458749999448628,
+      "peak_mem_mb": 81.39776,
+      "cells": 2098176
+    },
+    {
+      "pattern": "sliding_window",
+      "seq_len": 2048,
+      "time_ms": 1.4371910000363641,
+      "peak_mem_mb": 81.39776,
+      "cells": 491648
+    },
+    {
+      "pattern": "block_sparse",
+      "seq_len": 2048,
+      "time_ms": 1.4316489999828264,
+      "peak_mem_mb": 81.39776,
+      "cells": 693248
+    },
+    {
+      "pattern": "dense",
+      "seq_len": 4096,
+      "time_ms": 5.354974000056245,
+      "peak_mem_mb": 296.882176,
+      "cells": 8390656
+    },
+    {
+      "pattern": "sliding_window",
+      "seq_len": 4096,
+      "time_ms": 5.062763999944764,
+      "peak_mem_mb": 296.882176,
+      "cells": 1015936
+    },
+    {
+      "pattern": "block_sparse",
+      "seq_len": 4096,
+      "time_ms": 5.043725000064114,
+      "peak_mem_mb": 296.882176,
+      "cells": 1513472
+    },
+    {
+      "pattern": "dense",
+      "seq_len": 8192,
+      "time_ms": 19.837938000023314,
+      "peak_mem_mb": 1155.670016,
+      "cells": 33558528
+    },
+    {
+      "pattern": "sliding_window",
+      "seq_len": 8192,
+      "time_ms": 19.777253000029305,
+      "peak_mem_mb": 1155.670016,
+      "cells": 2064512
+    },
+    {
+      "pattern": "block_sparse",
+      "seq_len": 8192,
+      "time_ms": 19.71451999997953,
+      "peak_mem_mb": 1155.670016,
+      "cells": 3186688
+    }
+  ]
+}
