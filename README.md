@@ -41,7 +41,7 @@ I don't think it's a bug and why I also can't claim it's significant.
 - [x] 1.4 NaN handling for fully-masked query rows
 - [x] 1.5 Benchmark: wall-clock + peak memory, 512 → 8192
 - [x] 1.6 Quality evaluation: 2-layer char-level GPT on TinyShakespeare
-- [ ] 1.7 Writeup
+- [x] 1.7 Writeup
 
 ## Setup
 
